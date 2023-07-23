@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Отображение PDF</title>
+  <!-- Загрузка PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+</head>
+<body>
+  <!-- Создайте контейнер для отображения PDF -->
+  <div id="pdfContainer">
+    <!-- Вставьте сообщение для пользователей, если браузер не поддерживает PDF.js -->
+    <p>Ваш браузер не поддерживает просмотр PDF. Вы можете скачать файл, чтобы просмотреть его.</p>
+  </div>
+
+  <script>
+    // Путь к вашему PDF-файлу на GitHub
+    const pdfUrl = 'https://github.com/Sabir2006/IslkeleBalikMenu/blob/main/%D0%9C%D0%B5%D0%BD%D1%8E%20Iskele%20balik.pdf';
+
+    // Опции для отображения PDF
+    const options = {
+      // Например, масштабирование страницы по ширине контейнера
+      scale: 1.5,
+    };
+
+    // Загрузка PDF
+    pdfjsLib.getDocument(pdfUrl).promise.then(pdfDocument => {
+      // Первая страница для отображения
+      const pageNumber = 1;
+
+      // Получение страницы PDF
+      pdfDocument.getPage(pageNumber).then(page => {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.style.display = 'block';
+        const viewport = page.getViewport(options.scale);
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        // Отрисовка страницы на холсте
+        page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise.then(() => {
+          // Вставка холста с отрисованной страницей в контейнер
+          document.getElementById('pdfContainer').appendChild(canvas);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
